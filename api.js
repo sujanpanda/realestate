@@ -646,7 +646,7 @@ router.post('/adminlogin', (req, res) => {
 	}
 });
 
-router.post('/uploadproperty', function(req, res) {
+router.post('/uploadproperty', verifyAdmin, function(req, res) {
 
 	let propData = req.body;
 	let property_type = propData.property_type;
