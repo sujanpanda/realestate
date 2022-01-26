@@ -7,7 +7,7 @@ const path = require('path');
 
 const api = require('./api');
 const app = express();
-const port = 3030;
+const port = process.env.PORT || 3030;
 
 // file uploader
 const upload = require("express-fileupload");
