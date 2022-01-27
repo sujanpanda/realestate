@@ -165,7 +165,7 @@ router.get('/innerhomes', (req, res) => {
 			if(propHome) {
     			let srchArr = propHome.ids;
 				let propList = [];
-				console.log(propHome.ids);
+				// console.log(propHome.ids);
 				Property.find({
 			    '_id': { $in: srchArr}
 				},{},{}, function(err, list){
