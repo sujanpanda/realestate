@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const expressValidator = require('express-validator');
 
+const path = require('path');
+
 
 const api = require('./api');
 const app = express();
@@ -22,8 +24,12 @@ app.use(expressValidator());
 app.use(express.static('public'));
 app.use('/api', api);
 
-app.get('/', (req, res) => {
+app.get('/abd', (req, res) => {
   	res.send('Hello World!')
+});
+app.use(express.static('build'));
+app.get('/', function(req, res) {
+  	res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
 });
 
 app.listen(port, () => {
