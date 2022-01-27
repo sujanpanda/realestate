@@ -1266,7 +1266,7 @@ router.get('/gethomeids', verifyAdmin, function(req, res) {
 			res.status(404).send([{msg:'Not Found'}]);
 		} else {
 			if(propHome) {
-	     		res.status(200).send(propHome[0].ids);
+	     		res.status(200).send(["testing", "test2", "test3"]);
     		} else {
     			res.status(404).send([{msg:'Not Found'}]);
     		}
@@ -1275,7 +1275,7 @@ router.get('/gethomeids', verifyAdmin, function(req, res) {
 });
 
 router.post('/homeids', verifyAdmin, function(req, res) {
-	console.log(req.body.arr);
+	// console.log(req.body.arr);
 	if(req.body.arr) {
 		InnerPages.find({"table": "home_page"}, (err, propHome) => {
 			if(err) {
