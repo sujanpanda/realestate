@@ -144,7 +144,7 @@ router.get('/propertydetail/:id', (req, res) => {
 });
 
 router.get('/innerhomes', (req, res) => {
-	InnerPages.find({table: "home_page"}, (err, propHome) => {
+	InnerPages.findOne({table: "home_page"}, (err, propHome) => {
 		if(err) {
 			res.status(404).send([{msg:'Not Found'}]);
 		} else {
@@ -892,19 +892,7 @@ router.get('/admindash', verifyAdmin, function(req, res) {
 							req.status(401).send(err3);
 						} else {
 							outData.contList = list3.length;
-							outData.homeProps = [];
-							InnerPages.find({"table": "home_page"}, (err4, propHome) => {
-								if(err4) {
-									res.status(404).send([{msg:'Not Found'}]);
-								} else if(!propHome) {
-									res.status(200).send(outData);
-								} else {
-									outData.homeProps = propHome[0].ids;
-									res.status(200).send(outData);
-									// console.log(outData);
-								}
-							});
-				     		
+				     		res.status(200).send(outData);
 						}
 			     	});
 				}
@@ -1272,15 +1260,29 @@ router.post('/editedproperty', verifyAdmin, function(req, res) {
 	}
 });
 
+router.get('/gethomeids', verifyAdmin, function(req, res) {
+	InnerPages.findOne({"table": "home_page"}, (err, propHome) => {
+		if(err) {
+			res.status(404).send([{msg:'Not Found'}]);
+		} else {
+			if(propHome) {
+	     		res.status(200).send(propHome.ids);
+    		} else {
+    			res.status(404).send([{msg:'Not Found'}]);
+    		}
+		}
+	});
+});
+
 router.post('/homeids', verifyAdmin, function(req, res) {
 	// console.log(req.body.arr);
 	if(req.body.arr) {
-		InnerPages.find({"table": "home_page"}, (err, propHome) => {
+		InnerPages.findOne({"table": "home_page"}, (err, propHome) => {
 			if(err) {
 				res.status(404).send([{msg:'Not Found'}]);
 			} else {
-				propHome[0].ids = req.body.arr;
-				propHome[0].save(function(err, ubdatedObj){
+				propHome.ids = req.body.arr;
+				propHome.save(function(err, ubdatedObj){
 					if(err) {
 						res.status(404).send([{msg:'Not Found'}]);
 					} else {
