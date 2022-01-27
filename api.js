@@ -143,8 +143,22 @@ router.get('/propertydetail/:id', (req, res) => {
 	}
 });
 
+router.get('/gethomeids', function(req, res) {
+	InnerPages.findOne({"table": "home_page"}, (err, propHome) => {
+		if(err) {
+			res.status(404).send([{msg:'Not Found'}]);
+		} else {
+			if(propHome) {
+	     		res.status(200).send(propHome.ids);
+    		} else {
+    			res.status(404).send([{msg:'Not Found'}]);
+    		}
+		}
+	});
+});
+
 router.get('/innerhomes', (req, res) => {
-	InnerPages.findOne({table: "home_page"}, (err, propHome) => {
+	InnerPages.findOne({"table": "home_page"}, (err, propHome) => {
 		if(err) {
 			res.status(404).send([{msg:'Not Found'}]);
 		} else {
@@ -1258,20 +1272,6 @@ router.post('/editedproperty', verifyAdmin, function(req, res) {
 			}
 		});
 	}
-});
-
-router.get('/gethomeids', verifyAdmin, function(req, res) {
-	InnerPages.findOne({"table": "home_page"}, (err, propHome) => {
-		if(err) {
-			res.status(404).send([{msg:'Not Found'}]);
-		} else {
-			if(propHome) {
-	     		res.status(200).send(propHome.ids);
-    		} else {
-    			res.status(404).send([{msg:'Not Found'}]);
-    		}
-		}
-	});
 });
 
 router.post('/homeids', verifyAdmin, function(req, res) {
