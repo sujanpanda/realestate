@@ -144,7 +144,7 @@ router.get('/propertydetail/:id', (req, res) => {
 });
 
 router.get('/innerhomes', (req, res) => {
-	InnerPages.findOne({table: "home_page"}, (err, propHome) => {
+	InnerPages.find({table: "home_page"}, (err, propHome) => {
 		if(err) {
 			res.status(404).send([{msg:'Not Found'}]);
 		} else {
@@ -1261,12 +1261,12 @@ router.post('/editedproperty', verifyAdmin, function(req, res) {
 });
 
 router.get('/gethomeids', verifyAdmin, function(req, res) {
-	InnerPages.findOne({"table": "home_page"}, (err, propHome) => {
+	InnerPages.find({"table": "home_page"}, (err, propHome) => {
 		if(err) {
 			res.status(404).send([{msg:'Not Found'}]);
 		} else {
 			if(propHome) {
-	     		res.status(200).send(propHome.ids);
+	     		res.status(200).send(propHome[0].ids);
     		} else {
     			res.status(404).send([{msg:'Not Found'}]);
     		}
@@ -1277,12 +1277,12 @@ router.get('/gethomeids', verifyAdmin, function(req, res) {
 router.post('/homeids', verifyAdmin, function(req, res) {
 	console.log(req.body.arr);
 	if(req.body.arr) {
-		InnerPages.findOne({"table": "home_page"}, (err, propHome) => {
+		InnerPages.find({"table": "home_page"}, (err, propHome) => {
 			if(err) {
 				res.status(404).send([{msg:'Not Found'}]);
 			} else {
-				propHome.ids = req.body.arr;
-				propHome.save(function(err, ubdatedObj){
+				propHome[0].ids = req.body.arr;
+				propHome[0].save(function(err, ubdatedObj){
 					if(err) {
 						res.status(404).send([{msg:'Not Found'}]);
 					} else {
