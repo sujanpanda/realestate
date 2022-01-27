@@ -24,11 +24,11 @@ app.use(expressValidator());
 app.use(express.static('public'));
 app.use('/api', api);
 
-app.get('/abd', (req, res) => {
+app.get('/', (req, res) => {
   	res.send('Hello World!')
 });
 app.use(express.static('build'));
-app.get('/', function(req, res) {
+app.get('*', function(req, res) {
   	res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
 });
 

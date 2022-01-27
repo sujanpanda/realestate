@@ -163,8 +163,9 @@ router.get('/innerhomes', (req, res) => {
 			res.status(404).send([{msg:'Not Found'}]);
 		} else {
 			if(propHome) {
-    			let srchArr = propHome.ids
+    			let srchArr = propHome.ids;
 				let propList = [];
+				console.log(propHome.ids);
 				Property.find({
 			    '_id': { $in: srchArr}
 				},{},{}, function(err, list){
