@@ -199,6 +199,10 @@ router.get('/innerhomes', (req, res) => {
 	});
 });
 
+router.get('/hometest', (req, res) => {
+	res.status(200).send("Working");
+});
+
 
 router.get('/userdetail', verifyToken, (req, res) => {
 	let userDetail = {};
