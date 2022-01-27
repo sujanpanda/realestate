@@ -892,7 +892,19 @@ router.get('/admindash', verifyAdmin, function(req, res) {
 							req.status(401).send(err3);
 						} else {
 							outData.contList = list3.length;
-				     		res.status(200).send(outData);
+							outData.homeProps = [];
+							InnerPages.find({"table": "home_page"}, (err4, propHome) => {
+								if(err4) {
+									res.status(404).send([{msg:'Not Found'}]);
+								} else if(!propHome) {
+									res.status(200).send(outData);
+								} else {
+									outData.homeProps = propHome[0].ids;
+									res.status(200).send(outData);
+									// console.log(outData);
+								}
+							});
+				     		
 						}
 			     	});
 				}
@@ -1258,18 +1270,6 @@ router.post('/editedproperty', verifyAdmin, function(req, res) {
 			}
 		});
 	}
-});
-
-router.get('/gethomeids', verifyAdmin, function(req, res) {
-	InnerPages.find({"table": "home_page"}, (err, propHome) => {
-		if(err) {
-			res.status(404).send([{msg:'Not Found'}]);
-		} else if(!propHome) {
-			res.status(404).send([{msg:'Not Found'}]);
-		} else {
-			res.status(200).send(["testing", "test2", "test3"]);
-		}
-	});
 });
 
 router.post('/homeids', verifyAdmin, function(req, res) {
