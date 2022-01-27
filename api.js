@@ -8,6 +8,7 @@ const Contact = require('./models/contact');
 const Property = require('./models/property');
 const PropInquiry = require('./models/propInquiry');
 const PropOffer = require('./models/propOffer');
+const InnerPages = require('./models/innerPages');
 const filessystem = require('fs');
 const Jimp = require('jimp');
 
@@ -141,6 +142,49 @@ router.get('/propertydetail/:id', (req, res) => {
 		});
 	}
 });
+
+router.get('/innerhomes', (req, res) => {
+	InnerPages.findOne({table: "home_page"}, (err, propHome) => {
+		if(err) {
+			res.status(404).send([{msg:'Not Found'}]);
+		} else {
+			if(propHome) {
+    			let srchArr = propHome.ids
+				let propList = [];
+				Property.find({
+			    '_id': { $in: srchArr}
+				},{},{}, function(err, list){
+					if(err){
+						res.status(404).send([{msg:'Not Found'}]);
+					} else if (!list) {
+						res.status(404).send([{msg:'Not Found'}]);
+					} else {
+				     	list.map((lst)=>{
+				     		propList.push({
+				     			"id": lst._id,
+				     			"img": lst.img_detail[0],
+				     			"price": lst.price,
+				     			"bedrooms": lst.bedrooms,
+				     			"property_area": lst.property_area,
+				     			"house_type": lst.house_type,
+				     			"bathrooms": lst.bathrooms,
+				     			"parking_type": lst.parking_type,
+				     			"property_type": lst.property_type,
+				     			"status": lst.status,
+				     			"user_upload_status": lst.user_upload_status,
+				     			"want_to": lst.want_to
+				     		});
+				     	});
+				     	res.status(200).send(propList);
+				     }
+				});
+    		} else {
+    			res.status(404).send([{msg:'Not Found'}]);
+    		}
+		}
+	});
+});
+
 
 router.get('/userdetail', verifyToken, (req, res) => {
 	let userDetail = {};
@@ -424,24 +468,30 @@ router.get('/shortproplist/:id', verifyToken, (req, res) => {
 				Property.find({
 			    '_id': { $in: srchArr}
 				},{},{skip: skipCnt, limit: limitProp}, function(err, list){
-			     	list.map((lst)=>{
-			     		propList.push({
-			     			"id": lst._id,
-			     			"img": lst.img_detail[0],
-			     			"price": lst.price,
-			     			"bedrooms": lst.bedrooms,
-			     			"property_area": lst.property_area,
-			     			"house_type": lst.house_type,
-			     			"bathrooms": lst.bathrooms,
-			     			"parking_type": lst.parking_type,
-			     			"property_type": lst.property_type,
-			     			"status": lst.status,
-			     			"user_upload_status": lst.user_upload_status,
-			     			"want_to": lst.want_to
-			     		});
-			     	});
-			     	// console.log(propList);
-			     	res.status(200).send(propList);
+					if(err){
+						res.status(404).send([{msg:'Not Found'}]);
+					} else if (!list) {
+						res.status(404).send([{msg:'Not Found'}]);
+					} else {
+				     	list.map((lst)=>{
+				     		propList.push({
+				     			"id": lst._id,
+				     			"img": lst.img_detail[0],
+				     			"price": lst.price,
+				     			"bedrooms": lst.bedrooms,
+				     			"property_area": lst.property_area,
+				     			"house_type": lst.house_type,
+				     			"bathrooms": lst.bathrooms,
+				     			"parking_type": lst.parking_type,
+				     			"property_type": lst.property_type,
+				     			"status": lst.status,
+				     			"user_upload_status": lst.user_upload_status,
+				     			"want_to": lst.want_to
+				     		});
+				     	});
+				     	// console.log(propList);
+				     	res.status(200).send(propList);
+			     	}
 				});
 			}
 		});
@@ -462,24 +512,30 @@ router.get('/offerproplist/:id', verifyToken, (req, res) => {
 				Property.find({
 			    	'_id': { $in: srchArr}
 				},{},{skip: skipCnt, limit: limitProp}, function(err, list){
-			     	list.map((lst)=>{
-			     		propList.push({
-			     			"id": lst._id,
-			     			"img": lst.img_detail[0],
-			     			"price": lst.price,
-			     			"bedrooms": lst.bedrooms,
-			     			"property_area": lst.property_area,
-			     			"house_type": lst.house_type,
-			     			"bathrooms": lst.bathrooms,
-			     			"parking_type": lst.parking_type,
-			     			"property_type": lst.property_type,
-			     			"status": lst.status,
-			     			"user_upload_status": lst.user_upload_status,
-			     			"want_to": lst.want_to
-			     		});
-			     	});
-			     	// console.log(propList);
-			     	res.status(200).send(propList);
+					if(err){
+						res.status(404).send([{msg:'Not Found'}]);
+					} else if (!list) {
+						res.status(404).send([{msg:'Not Found'}]);
+					} else {
+				     	list.map((lst)=>{
+				     		propList.push({
+				     			"id": lst._id,
+				     			"img": lst.img_detail[0],
+				     			"price": lst.price,
+				     			"bedrooms": lst.bedrooms,
+				     			"property_area": lst.property_area,
+				     			"house_type": lst.house_type,
+				     			"bathrooms": lst.bathrooms,
+				     			"parking_type": lst.parking_type,
+				     			"property_type": lst.property_type,
+				     			"status": lst.status,
+				     			"user_upload_status": lst.user_upload_status,
+				     			"want_to": lst.want_to
+				     		});
+				     	});
+				     	// console.log(propList);
+				     	res.status(200).send(propList);
+			     	}
 				});
 			}
 		});
@@ -504,23 +560,29 @@ router.get('/randomproperties', verifyToken, (req, res) => {
 			    	propId = r;
 			    }
 			    Property.aggregate([ { "$match": { "city": { $regex: new RegExp("^" + cityField.toLowerCase(), "i") } } }, { $sample: { size : 4 } } ]).exec(function(err, list){
-			     	list.map((lst)=>{
-			     		propList.push({
-			     			"id": lst._id,
-			     			"img": lst.img_detail[0],
-			     			"price": lst.price,
-			     			"bedrooms": lst.bedrooms,
-			     			"property_area": lst.property_area,
-			     			"house_type": lst.house_type,
-			     			"bathrooms": lst.bathrooms,
-			     			"parking_type": lst.parking_type,
-			     			"property_type": lst.property_type,
-			     			"status": lst.status,
-			     			"user_upload_status": lst.user_upload_status,
-			     			"want_to": lst.want_to
-			     		});
-			     	});
-			     	res.status(200).send(propList);
+			    	if(err){
+						res.status(404).send([{msg:'Not Found'}]);
+					} else if (!list) {
+						res.status(404).send([{msg:'Not Found'}]);
+					} else {
+				     	list.map((lst)=>{
+				     		propList.push({
+				     			"id": lst._id,
+				     			"img": lst.img_detail[0],
+				     			"price": lst.price,
+				     			"bedrooms": lst.bedrooms,
+				     			"property_area": lst.property_area,
+				     			"house_type": lst.house_type,
+				     			"bathrooms": lst.bathrooms,
+				     			"parking_type": lst.parking_type,
+				     			"property_type": lst.property_type,
+				     			"status": lst.status,
+				     			"user_upload_status": lst.user_upload_status,
+				     			"want_to": lst.want_to
+				     		});
+				     	});
+				     	res.status(200).send(propList);
+			     	}
 				});
 			});
 		}
@@ -555,23 +617,29 @@ router.get('/searchprop/:id', (req, res) => {
 			want_to = {'want_to': { $in: queries[1]}, 'user_upload_status': { $in: "open"}, 'property_type': queries[3], $or: searchString};
 		}
 		Property.find(want_to,{},{skip: parseInt(queries[5]), limit: limitProp, sort: {price: sorting}}, function(err, list){
-	     	list.map((lst)=>{
-	     		propList.push({
-	     			"id": lst._id,
-	     			"img": lst.img_detail[0],
-	     			"price": lst.price,
-	     			"bedrooms": lst.bedrooms,
-	     			"property_area": lst.property_area,
-	     			"house_type": lst.house_type,
-	     			"bathrooms": lst.bathrooms,
-	     			"parking_type": lst.parking_type,
-	     			"property_type": lst.property_type,
-	     			"status": lst.status,
-	     			"user_upload_status": lst.user_upload_status,
-	     			"want_to": lst.want_to
-	     		});
-	     	});
-	     	res.status(200).send(propList);
+			if(err){
+				res.status(404).send([{msg:'Not Found'}]);
+			} else if (!list) {
+				res.status(404).send([{msg:'Not Found'}]);
+			} else {
+		     	list.map((lst)=>{
+		     		propList.push({
+		     			"id": lst._id,
+		     			"img": lst.img_detail[0],
+		     			"price": lst.price,
+		     			"bedrooms": lst.bedrooms,
+		     			"property_area": lst.property_area,
+		     			"house_type": lst.house_type,
+		     			"bathrooms": lst.bathrooms,
+		     			"parking_type": lst.parking_type,
+		     			"property_type": lst.property_type,
+		     			"status": lst.status,
+		     			"user_upload_status": lst.user_upload_status,
+		     			"want_to": lst.want_to
+		     		});
+		     	});
+		     	res.status(200).send(propList);
+	     	}
 		});
 	} else {
 		res.status(404).send([{msg:'No item found'}]);
@@ -956,27 +1024,25 @@ router.post('/editproperty', verifyAdmin, function(req, res) {
 		Property.findOne({_id: req.body.byID},{},{}, function(err, list){
 			if(err) {
 				res.status(404).send({"msg":"No item found"});
+			} else if(!list) {
+				res.status(404).send({"msg":"No item found"});
 			} else {
-				if(!list) {
-					res.status(404).send({"msg":"No item found"});
-				} else {
-		     		propList.push({
-		     			"id": list._id,
-		     			"img": list.img_detail[0],
-		     			"price": list.price,
-		     			"bedrooms": list.bedrooms,
-		     			"property_area": list.property_area,
-		     			"house_type": list.house_type,
-		     			"bathrooms": list.bathrooms,
-		     			"parking_type": list.parking_type,
-		     			"property_type": list.property_type,
-		     			"status": list.status,
-		     			"user_upload_status": list.user_upload_status,
-		     			"want_to": list.want_to
-		     		});
-			     	res.status(200).send(propList);
-		     	}
-			}
+	     		propList.push({
+	     			"id": list._id,
+	     			"img": list.img_detail[0],
+	     			"price": list.price,
+	     			"bedrooms": list.bedrooms,
+	     			"property_area": list.property_area,
+	     			"house_type": list.house_type,
+	     			"bathrooms": list.bathrooms,
+	     			"parking_type": list.parking_type,
+	     			"property_type": list.property_type,
+	     			"status": list.status,
+	     			"user_upload_status": list.user_upload_status,
+	     			"want_to": list.want_to
+	     		});
+		     	res.status(200).send(propList);
+	     	}
 		});
 	} else {
 		res.status(404).send([{"msg":"No item found"}]);
@@ -1192,6 +1258,43 @@ router.post('/editedproperty', verifyAdmin, function(req, res) {
 			}
 		});
 	}
+});
+
+router.get('/gethomeids', verifyAdmin, function(req, res) {
+	InnerPages.findOne({table: "home_page"}, (err, propHome) => {
+		if(err) {
+			res.status(404).send([{msg:'Not Found'}]);
+		} else {
+			if(propHome) {
+	     		res.status(200).send(propHome.ids);
+    		} else {
+    			res.status(404).send([{msg:'Not Found'}]);
+    		}
+		}
+	});
+});
+
+router.post('/homeids', verifyAdmin, function(req, res) {
+	console.log(req.body.arr);
+	if(req.body.arr) {
+		InnerPages.findOne({table: "home_page"}, (err, propHome) => {
+			if(err) {
+				res.status(404).send([{msg:'Not Found'}]);
+			} else {
+				propHome.ids = req.body.arr;
+				propHome.save(function(err, ubdatedObj){
+					if(err) {
+						res.status(404).send([{msg:'Not Found'}]);
+					} else {
+						res.status(200).send([{msg:"Updated"}]);
+					}
+				});
+			}
+		});
+	} else {
+		res.status(404).send([{msg:'Not Found'}]);
+	}
+	
 });
 
 router.get('/abcd', (req, res) => {

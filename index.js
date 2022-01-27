@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const expressValidator = require('express-validator');
-const path = require('path');
 
 
 const api = require('./api');
@@ -23,14 +22,10 @@ app.use(expressValidator());
 app.use(express.static('public'));
 app.use('/api', api);
 
-// app.get('/', (req, res) => {
-//   	res.send('Hello World!')
-// });
-app.use(express.static('build'));
-app.get('*', (req, res) => {
-	res.sendFile(path.resolve(__dirname, 'build', 'index.html'))
+app.get('/', (req, res) => {
+  	res.send('Hello World!')
 });
 
 app.listen(port, () => {
-  	console.log(`server running on :${port}`);
+  	console.log(`Example app listening at http://localhost:${port}`);
 });
