@@ -1264,12 +1264,10 @@ router.get('/gethomeids', verifyAdmin, function(req, res) {
 	InnerPages.find({"table": "home_page"}, (err, propHome) => {
 		if(err) {
 			res.status(404).send([{msg:'Not Found'}]);
+		} else if(!propHome) {
+			res.status(404).send([{msg:'Not Found'}]);
 		} else {
-			if(propHome) {
-	     		res.status(200).send(["testing", "test2", "test3"]);
-    		} else {
-    			res.status(404).send([{msg:'Not Found'}]);
-    		}
+			res.status(200).send(["testing", "test2", "test3"]);
 		}
 	});
 });
