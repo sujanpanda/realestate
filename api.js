@@ -1261,7 +1261,7 @@ router.post('/editedproperty', verifyAdmin, function(req, res) {
 });
 
 router.get('/gethomeids', verifyAdmin, function(req, res) {
-	InnerPages.findOne({table: "home_page"}, (err, propHome) => {
+	InnerPages.findOne({"table": "home_page"}, (err, propHome) => {
 		if(err) {
 			res.status(404).send([{msg:'Not Found'}]);
 		} else {
@@ -1277,7 +1277,7 @@ router.get('/gethomeids', verifyAdmin, function(req, res) {
 router.post('/homeids', verifyAdmin, function(req, res) {
 	console.log(req.body.arr);
 	if(req.body.arr) {
-		InnerPages.findOne({table: "home_page"}, (err, propHome) => {
+		InnerPages.findOne({"table": "home_page"}, (err, propHome) => {
 			if(err) {
 				res.status(404).send([{msg:'Not Found'}]);
 			} else {
